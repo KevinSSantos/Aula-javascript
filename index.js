@@ -29,6 +29,7 @@ async function mostrarMenu() {
             { name: "Marcar metas como concluídas", value: "marcar" },
             { name: "Mostrar metas realizadas", value: "realizadas" },
             { name: "Mostrar metas em aberto", value: "aberto"},
+            { name: "Deletar metas", value: "deletar"},
             { name: "Sair", value: "sair" }
         ]
     })
@@ -52,6 +53,9 @@ async function executarAcao(opcao) {
             break;   
         case "aberto":
              await metasAberto();
+            break;
+        case "deletar":
+            await deletarMetas();
             break;       
         case "sair":
             console.log("Saindo do sistema. Até mais!👋");
@@ -203,6 +207,35 @@ async function metasAberto() {
  mostrarMensagem(`Você tem ${aberto.length} meta(s) em aberto!`);
 
 }
+
+async function deletarMetas() {
+    if (metas.length === 0) {
+        mostrarMensagem("Não existem metas cadastradas")
+        return;
+    }
+}
+
+const mestasParaDeletar = await checkbox ({
+    message: "Selecione metas que deseja deletar:",
+    choices: metas.map(meta =>
+    ({name: meta.value,
+     value: meta.value,
+     checked: false
+  })),
+});
+
+if(mestasParaDeletar.length ===0) {
+    mostrarMensagem("Nenhuma meta foi selecionada para deletar")
+    return;
+}
+    mestasParaDeletar.forEach(metaParaDeletar => {
+     metas = metas.filter(meta => meta.value !== metaParaDeletar);
+
+})
+
+mostrarMensagem("Metas deletadas com sucesso!")
+    
+
 
 iniciar();                             //chamando a função principal
 /*console.log("Metas atualizadas:", metas.length);
