@@ -19,5 +19,6 @@
   "bugs": {
     "url": "https://github.com/KevinSSantos/Aula-javascript/issues"
   },
-  "homepage": "https://github.com/KevinSSantos/Aula-javascript#readme"
+  "homepage": "https://github.com/KevinSSantos/Aula-javascript#readme",
+  "devDependencies": {}
 }
