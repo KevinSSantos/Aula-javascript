@@ -28,6 +28,7 @@ async function mostrarMenu() {
             { name: "Mostrar todas as metas", value: "mostrar" },
             { name: "Marcar metas como concluídas", value: "marcar" },
             { name: "Mostrar metas realizadas", value: "realizadas" },
+            { name: "Mostrar metas em aberto", value: "aberto"},
             { name: "Sair", value: "sair" }
         ]
     })
@@ -48,7 +49,10 @@ async function executarAcao(opcao) {
             break;
         case "realizadas":
             await metasRealizadas();
-            break;        
+            break;   
+        case "aberto":
+             await metasAberto();
+            break;       
         case "sair":
             console.log("Saindo do sistema. Até mais!👋");
             break;
@@ -177,6 +181,26 @@ async function metasRealizadas() {
 
 
  mostrarMensagem(`Parabens você já concluiou ${realizadas.length} metas! 🎉`);
+
+}
+
+//Aberto
+
+async function metasAberto() {
+    const aberto = metas.filter(meta => meta.checked === false);
+
+    if (aberto.length === 0) {
+        mostrarMensagem("Nenhuma meta em aberto.");
+        return;
+    }
+    
+    console.log("Metas em aberto:");
+    aberto.forEach((meta, index) => {
+        console.log(`${index + 1}. ${meta.value}`);
+    });
+
+
+ mostrarMensagem(`Você tem ${aberto.length} meta(s) em aberto!`);
 
 }
 
