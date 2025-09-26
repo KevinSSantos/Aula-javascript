@@ -11,15 +11,32 @@ async function salvarMetas() {
     }
 }
 
+async function carregarMetas() {
+    try {
+        const dados = await fs.readFile('metas.json', 'utf-8');
+        metas = JSON.parse(dados);
+        mostrarMensagem("✔️  Metas carregadas com sucesso!");
+    } catch (error) {
+        metas = [];
+        mostrarMensagem("⚠️  Nenhum arquivo de metas encontrado. Começando com uma lista vazia.");
+    }
+}
 
 let metas = [];
 
 function limparTela() {
-  console.clear();
+    console.clear();
 }
 
-function mostrarMensagem(mensagem) {
-    console.log(`\n${mensagem}\n`);
+function definirMensagem(mensagem) {
+    mensagemAtual = novaMensagem;
+}
+
+function mostrarMensagemAtual() {
+    if (mensagemAtual) {
+        console.log(`\n${mensagemAtual}\n`);
+        mensagemAtual = "";
+    }
 }
 
 async function mostrarMenu() {
@@ -62,21 +79,23 @@ async function executarAcao(opcao) {
         case "sair":
             break;
         default:
-            console.log("Opção inválida. Tente novamente. ❌");
+            definirMensagem("Opção inválida. Tente novamente. ❌");
     }
 }
 
 async function iniciar() {
     limparTela();
-    mostrarMensagem("=== 📱Sistema de Metas Pessoais ===");
+    await carregarMetas();
+    definirMensagem("=== 📱Sistema de Metas Pessoais ===");
 
     while (true) {
+        limparTela();
+        mostrarMensagemAtual();
         const opcao = await mostrarMenu();
 
         if (opcao === "sair") {
             await executarAcao(opcao);
-            limparTela();
-            mostrarMensagem("Até mais! 👋🏽");
+            console.log("Até mais! 👋🏽");
             break;
         }
 
@@ -91,7 +110,7 @@ async function adicionarMeta() {
   });
 
   if (descricao.length === 0) {
-    mostrarMensagem("❌ Meta inválida. Tente novamente.");
+    definirMensagem("❌ Meta inválida. Tente novamente.");
     return;
   }
 
@@ -102,26 +121,26 @@ async function adicionarMeta() {
 
   metas.push(novaMeta);
 
-  mostrarMensagem("✅ Meta adicionada com sucesso!");
+  definirMensagem("✅ Meta adicionada com sucesso!");
 }
 
 async function mostrarMetas() {
     if (metas.length === 0) {
-        mostrarMensagem(" ⛔ Não existem metas cadastradas!");
+        definirMensagem(" ⛔ Não existem metas cadastradas!");
         return;
     }
 
-    console.log("📚 Suas Metas Pessoais:");
+    definirMensagem("📚 Suas Metas Pessoais:");
     metas.forEach((meta, index) => {
       const status = meta.checked ? "[x]" : "[ ]";  
-      console.log(`${status} ${index + 1}. ${meta.value}`);
+      definirMensagem(`${status} ${index + 1}. ${meta.value}`);
     });
 }
 
 
 async function marcarMetas() {
     if (metas.length === 0) {
-        mostrarMensagem(" ⛔ Não existem metas cadastradas!");
+        definirMensagem(" ⛔ Não existem metas cadastradas!");
         return;
     }
 
@@ -143,23 +162,23 @@ async function marcarMetas() {
         }
     });
 
-    mostrarMensagem("✅ Metas atualizadas com sucesso!");
+    definirMensagem("✅ Metas atualizadas com sucesso!");
 }
 
 async function metasRealizadas() {
     const realizadas = metas.filter(meta => meta.checked);
 
     if (realizadas.length === 0) {
-        mostrarMensagem("❌ Não existem metas realizadas!");
+        definirMensagem("❌ Não existem metas realizadas!");
         return;
     }
 
-    console.log("✅ Metas Realizadas:");
+    definirMensagem("✅ Metas Realizadas:");
     realizadas.forEach((meta, index) => {
-        console.log(`${index + 1}. ${meta.value}`);
+        definirMensagem(`${index + 1}. ${meta.value}`);
     });
 
-    mostrarMensagem(`Parabéns Você já concluiu ${realizadas.length} metas! 🎉`);
+    definirMensagem(`Parabéns Você já concluiu ${realizadas.length} metas! 🎉`);
 
     
 }
@@ -168,7 +187,7 @@ async function metasAbertas() {
     const abertas = metas.filter(meta => !meta.checked);
 
     if (abertas.length === 0) {
-        mostrarMensagem("❌ Não existem metas abertas!");
+        definirMensagem("❌ Não existem metas abertas!");
         return;
     }
 
@@ -177,13 +196,13 @@ async function metasAbertas() {
         console.log(`${index + 1}. ${meta.value}`);
     });
 
-    mostrarMensagem(`Você ainda tem ${abertas.length} metas para concluir. Vamos lá! 🚀`);
+    definirMensagem(`Você ainda tem ${abertas.length} metas para concluir. Vamos lá! 🚀`);
 }
 
 async function deletarMetas() {
     
     if (metas.length === 0) {
-        mostrarMensagem("❌ Não existem metas cadastradas!");
+        definirMensagem("❌ Não existem metas cadastradas!");
         return;
     }
 
@@ -197,7 +216,7 @@ async function deletarMetas() {
     });
 
     if(metasParaDeletar.length === 0) {
-        mostrarMensagem("‼️ Nenhuma meta foi selecionada para deletar")
+        definirMensagem("‼️ Nenhuma meta foi selecionada para deletar")
         return;
     }
 
@@ -205,7 +224,7 @@ async function deletarMetas() {
         metas = metas.filter(meta => meta.value !== metaParaDeletar);
     })
 
-    mostrarMensagem("✅ Metas deletadas com sucesso!");
+    definirMensagem("✅ Metas deletadas com sucesso!");
 
 }
 
